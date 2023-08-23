@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <!-- <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+      integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+      crossorigin="anonymous"
+    /> -->
+
+    <link rel="stylesheet" href="src/index.css" />
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js"
+    ></script>
+    <title>Nestjs Chat Room</title>
+  </head>
+
+  <body>
+    <div id="app">
+      <div id="pageOne" v-if="isShow">
+        <h1>{{ title }}</h1>
+        <div id="container">
+          <div id="username">
+            <label for="username">User name</label>
+            <input
+              type="text"
+              v-model="name"
+              id="username"
+              placeholder="Enter name..."
+              @change="onNameChange($event)"
+            />
+          </div>
+          <div id="selectRoom">
+            <label for="room">Select room</label>
+            <select id="room" v-model="selected" @change="onChange($event)" :disabled="isDisabled">
+              <option v-for="room of listRooms" :value="room">{{ room }}</option>
+            </select>
+          </div>
+          <button @click="intoChat">Start</button>
+        </div>
+      </div>
+
+      <div id="pageTwo" v-show="showChatWindow">
+        <div id="content">
+          <div id="messages">
+            <ul id="ulScroll">
+              <li v-for="message of messages">{{ message.name }}: {{ message.text }}</li>
+            </ul>
+          </div>
+          <div id="setMeg">
+            <textarea
+              id="textarea"
+              class="form-control"
+              v-model="text"
+              placeholder="Enter message..."
+            ></textarea>
+            <button id="send" class="btn" @click.prevent="sendMessage" :disabled="isDisabled">
+              Send
+            </button>
+          </div>
+        </div>
+        <div id="roomStatus">
+          <p>Room Stutas</p>
+          <div>
+            <ul class="otherMegs">
+              <li v-for="(value, key) in roomClients">{{ key }} 在線人數: {{ value }}</li>
+            </ul>
+          </div>
+          <div>
+            <ul class="otherMegs">
+              <li>濕度:{{ humidity.value }} （更新時間 {{ humidity.timestamp }})</li>
+              <li>溫度:{{ temperature.value }} （更新時間 {{ temperature.timestamp }})</li>
+            </ul>
+          </div>
+        </div>
+        <div id="closeBtn" @click="switchBtn">X</div>
+      </div>
+      <div id="showLeaveWindow" v-show="showLeaveWindow">
+        <h2>Leave chat room</h2>
+        <button class="leaveRoom" @click="leaveBtn">Switch Room</button>
+        <button class="leaveRoom" @click="exitBtn">Cancel</button>
+      </div>
+      <!-- -------------------------------------------------------       -->
+      <!-- <div class="row" class="container">
+        <div class="col-md-6 offset-md-3 col-sm-12">
+          <h1 class="text-center">{{ title }}</h1>
+          <br />
+          <div id="status"></div>
+          <div id="chat">
+            <label for="username">Your Name:</label>
+            <input
+              type="text"
+              v-model="name"
+              id="username"
+              class="form-control"
+              placeholder="Enter name..."
+              @change="onNameChange($event)"
+            />
+            <br />
+            <label for="room">Select room:</label>
+            <select
+              class="form-control"
+              id="room"
+              v-model="selected"
+              @change="onChange($event)"
+              :disabled="isDisabled"
+            >
+              <option v-for="room of listRooms" :value="room">{{ room }}</option>
+            </select>
+            <br />
+
+
+            <label for="messages">Chat:</label>
+            <div class="card">
+              <div id="messages" class="card-block">
+                <ul>
+                  <li v-for="message of messages">{{ message.name }}: {{ message.text }}</li>
+                </ul>
+              </div>
+            </div>
+            <br />
+
+
+            
+            <label for="textarea">Message:</label>
+            <textarea
+              id="textarea"
+              class="form-control"
+              v-model="text"
+              placeholder="Enter message..."
+            ></textarea>
+            <br />
+            <button id="send" class="btn" @click.prevent="sendMessage" :disabled="isDisabled">
+              Send
+            </button>
+            <label>目前聊天室人數: {{ clientCount }}</label>
+          </div>
+        </div>
+      </div> -->
+    </div>
+
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>

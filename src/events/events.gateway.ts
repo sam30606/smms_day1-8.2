@@ -13,26 +13,26 @@ export class EventsGateway {
   @SubscribeMessage('joinRoom')
   async joinRoom(@MessageBody() data: any, @ConnectedSocket() client: Socket): Promise<void> {
     console.log('joinRoom', data);
-    // client.join(data['room']);
     const count: object = await this.eventsService.countMenber(client.id, data['action'], data['room']);
+    this.server.emit('updateClientCnt', count);
+    // client.join(data['room']);
     // const clients = this.server.sockets.adapter.rooms.get(data['room']);
     // const numClients = clients ? { room: data['room'], count: clients.size } : { room: data['room'], count: 0 };
-    // this.eventsService.getClients(this.server, clients, data['room']);
+    // this.server.emit('updateClientCnt', numClients);
     this.server.emit('joinedRoom', data);
     this.server.emit('roomNotiMsg', data);
-    // this.server.emit('updateClientCnt', numClients);
-    this.server.emit('updateClientCnt', count);
   }
   @SubscribeMessage('leaveRoom')
   async leaveRoom(@MessageBody() data: any, @ConnectedSocket() client: Socket): Promise<void> {
     console.log('leaveRoom', data);
-    // client.leave(data['room']);
     const count: object = await this.eventsService.countMenber(client.id, data['action'], data['room']);
-    // const clientsents = clients ? { room: data['room'], count: clients.size } : { room: data['room'], count: 0 };
+    this.server.emit('updateClientCnt', count);
+    // client.leave(data['room']);
+    // const clients = this.server.sockets.adapter.rooms.get(data['room']);
+    // const numClients = clients ? { room: data['room'], count: clients.size } : { room: data['room'], count: 0 };
+    // this.server.emit('updateClientCnt', numClients);
     this.server.emit('roomNotiMsg', data);
     this.server.emit('leftRoom', data);
-    // this.server.emit('updateClientCnt', numClients);
-    this.server.emit('updateClientCnt', count);
   }
 
   @SubscribeMessage('msgToServer')
